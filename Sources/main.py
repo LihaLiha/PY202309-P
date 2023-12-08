@@ -6,18 +6,8 @@ from tabulate import tabulate
 import re, os
 import numpy as np
 
-# tabulate 한글 출력
+# tabulate 한글 출력을 위한 코드
 tabulate.WIDE_CHARS_MODE = False
-
-
-## 지출 저장 기능
-# 1. 날짜 입력 ex) 20231102 년, 월 일 순으로 입력받기
-# 2. 액수 입력 (+ 메모 기능)
-# 3. 지출액 저장
-
-
-
-
 
 
 # csv 저장 함수
@@ -35,13 +25,17 @@ def save_to_csv(expense_name, amount, date, category):
 def enter_expense():
     # 사용자로부터 지출 정보 입력 받기
     expense_name = input("지출 항목을 입력하세요: ")
+    print("\n")
     amount = float(input("금액을 입력하세요: "))
+    print("\n")
     date = input("날짜를 입력하세요 (YYYY-MM-DD 형식): ")
+    print("\n")
     category = input("카테고리를 입력하세요: ")
+    print("\n")
 
     # 입력된 정보 파일에 저장
     save_to_csv(expense_name, amount, date, category)
-    print("지출 정보가 저장되었습니다.")
+    print("지출 정보가 저장되었습니다.\n")
 
     # 데이터 정리를 위해 csv 카피
     shutil.copy('가계부.csv', '가계부정리.csv')
@@ -75,29 +69,31 @@ def date_conversion():
     df.to_csv('가계부정리.csv', index=False)
 
 
-# 각 달의 지출 평균 함수
+# 각 달의 지출 합계 출력 함수
 def average_expense():
     df = pd.read_csv('가계부정리.csv')
 
-    # 년,월을 추출하여 평균값을 받아 출력
-    newtable = pd.pivot_table(data=df,index= ['연도', '월'], values='지출액', aggfunc=np.mean())
+    # 년,월을 추출하여 각 기간의 합을 출력
+    newtable = pd.pivot_table(data=df,index= ['연도', '월'], values='지출액', aggfunc='sum')
     print(tabulate(newtable, headers='keys', tablefmt='grid', stralign='center'))
     print("(년, 월) 지출액")
 
 
-## 메인 메뉴
-print(":::::::::::::::::")
-print("지출 관리 프로그램")
-print(":::::::::::::::::")
-print(":::::::메뉴:::::::")
-print("1. 지출 내용 입력")
-print("2. 지난 지출 내역 확인")
-print("3. 지출 평균 확인")
-print("4. 종료")
+
 
 
 while True:
+    ## 메인 메뉴
+    print(":::::::::::::::::")
+    print("지출 관리 프로그램")
+    print(":::::::::::::::::")
+    print(":::::::메뉴:::::::")
+    print("1. 지출 내용 입력")
+    print("2. 지출 상세")
+    print("3. 나의 한달 지출")
+    print("4. 종료")
     menu_num = int(input("번호를 입력해주세요: "))
+    print("\n")
 
     if menu_num == 1:
         # 지출 저장      
@@ -114,11 +110,12 @@ while True:
 
     elif menu_num == 4:
         # 종료
+        print("종료합니다.")
         break
 
     else:
         # 외 문자 입력 시
-        print("올바른 번호를 입력해주세요.")
+        print("올바른 번호를 입력해주세요.\n")
         continue
 
 
